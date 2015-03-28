@@ -1,0 +1,46 @@
+@(message: String)
+
+@main("This Is Proxy") {
+<div class="container-fluid">
+    <div class="col-md-9 col-md-push-3">
+        <h3><span class="label label-default">Favorites</span></h3>
+        <div class="row">
+            <div class="col-xs-6 col-md-3">
+                <a href="#" class="img-rounded">
+                    <img src="@routes.Assets.at("images/ProxyLogo.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="#" class="img-rounded">
+                    <img src="@routes.Assets.at("images/ProxyLarge.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="#" class="img-rounded">
+                    <img src="@routes.Assets.at("images/ProxyLogo.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="#" class="img-rounded">
+                    <img src="@routes.Assets.at("images/ProxyLarge.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-md-pull-9">
+
+        <!-- List group -->
+        <ul class="list-group">
+            <li class="list-group-item">Favorites</li>
+            <li class="list-group-item">Family</li>
+            <li class="list-group-item">Friends</li>
+            <li class="list-group-item">Acquaintances</li>
+            <li class="list-group-item">Businesses</li>
+        </ul>
+    </div>
+
+</div>
+
+
+}
