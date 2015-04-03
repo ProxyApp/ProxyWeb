@@ -13,3 +13,5 @@ case class SimpleStorage[A](c: Seq[A]) extends Source[A] with Sink[A]{
     Some(SimpleStorage(ns))
   }
 }
+
+
