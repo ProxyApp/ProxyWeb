@@ -2,7 +2,10 @@ package engine.service
 
 import engine.domain.Error.Err
 import engine.domain.User
-import engine.io.{Sink, Source}
+
+trait Context[T] {
+  val context: T
+}
 
 trait ServiceCore[C <: Context[_], P] {
 

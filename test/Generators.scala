@@ -2,6 +2,7 @@ package proxyweb
 
 import engine.domain._
 import engine.service.GroupManager.RemoveGroup
+import engine.service.Protocol._
 import engine.service.{Protocol => P}
 import org.scalacheck.Gen
 
@@ -15,7 +16,7 @@ object Generators {
 
   //note Protocol Commands
   def genCreateGroup: Gen[P.CreateGroup] =
-    groupId.map(id => P.CreateGroup(id.value))
+    groupId.map(id => P.CreateGroup(id.value, id))
 
   def genRemoveGroup =
     groupId.map(id => P.RemoveGroup(id))
@@ -23,7 +24,6 @@ object Generators {
   def genChannel =
     Gen.oneOf(genWebChannel, genWebChannel)
 
-  def genLsWebChannel = Gen.listOf(genWebChannel)
   def genWebChannel = for {
     n <- Gen.alphaStr
     url <- Gen.alphaStr
@@ -34,15 +34,16 @@ object Generators {
   def genContact = for{
     id <- userId
     lbl <- Gen.alphaStr
-    n <- Gen.choose(1, 20)
+    n <- Gen.choose(1, 5)
     cs <- Gen.listOfN(n, genChannel)
   } yield Contact(id, lbl, cs)
 
   def genGroup = for {
     id <- groupId
     lbl <- Gen.alphaStr
-    cs <- Gen.listOf(genChannel)
-    n <- Gen.choose(0, 50)
+    m <- Gen.choose(1,7)
+    cs <- Gen.listOfN(m, genChannel)
+    n <- Gen.choose(1, 5)
     contacts <- genLsContact(n)
   } yield Group(id, lbl, cs, contacts)
 
@@ -51,10 +52,11 @@ object Generators {
     id <- userId
     name <- Gen.alphaStr
     email <- Gen.alphaStr.map(Email(_))
-    channels <- Gen.listOf(genChannel)
-    n <- Gen.choose(0, 50)
+    m <- Gen.choose(1, 5)
+    channels <- Gen.listOfN(m, genChannel)
+    n <- Gen.choose(1, 5)
     contacts <- genLsContact(n)
-    grps <- Gen.listOf(genGroup)
+    grps <- Gen.listOfN(m, genGroup)
   } yield User(id, name, email, channels, contacts, grps)
 
 
@@ -67,8 +69,73 @@ object Generators {
     gid <- groupId
     cid <- channelId
     a <- Gen.oneOf(u.groups.head.id, gid)
-    b <- Gen.oneOf(u.channels.head.id, cid)
+    b <- Gen.oneOf(u.groups.head.channels.head.id, cid)
   } yield P.AddChannelToGroup(a, b)
+
+  def genRemoveChannel(u: User) = for {
+    gid <- groupId
+    cid <- channelId
+    a <- Gen.oneOf(u.groups.head.id, gid)
+    b <- Gen.oneOf(u.groups.head.channels.head.id, cid)
+  } yield P.RemoveChannelFromGroup(a, b)
+
+  def genAddContact(u: User) = for {
+    gid <- groupId
+    cid <- userId
+    a <- Gen.oneOf(u.groups.head.id, gid)
+    b <- Gen.oneOf(u.groups.head.contacts.head.id, cid)
+  } yield P.AddContactToGroup(a, b)
+
+  def genRemoveContact(u: User) = for {
+    gid <- groupId
+    cid <- userId
+    a <- Gen.oneOf(u.groups.head.id, gid)
+    b <- Gen.oneOf(u.groups.head.contacts.head.id, cid)
+  } yield P.RemoveContactFromGroup(a, b)
+
+  def genGroupCmd(u: User): Gen[GroupCmd] =
+    Gen.oneOf(genCreateGroup,
+      genAddChannel(u),
+      genAddContact(u),
+      genRemoveContact(u),
+      genRemoveChannel(u),
+      genRemoveGroup(u.groups.head.id))
+
+  def genCreateWebChannel(u: User) = for {
+    id <- channelId
+    l <- Gen.alphaStr
+    url <- Gen.alphaStr
+    n <- Gen.choose(0, u.channels.length -1)
+    a <- Gen.oneOf(l, u.channels(n).label)
+    b <- Gen.oneOf(l, User.webChannels(u).head.label)
+  } yield CreateWebChannel(id, a, b)
+
+  def genRemoveWebChannel(u: User) = for{
+    id <- channelId
+    a <- Gen.oneOf(id, User.webChannels(u).head.id)
+  } yield RemoveWebChannel(a)
+
+  def genCreateContact(u: User) = for{
+    id <- userId
+    a <- Gen.oneOf(id, u.contacts.head.id)
+  } yield CreateContact(a)
+
+  def genRemoveUContact(u: User) = for {
+    id <- userId
+    a <- Gen.oneOf(id, u.contacts.head.id)
+  } yield RemoveContact(a)
+
 }
 
+
+
+object Util {
+  def lineByLineCompare[T](a: T, b: T) = {
+    val as = a.toString.split(",")
+    val bs = b.toString.split(",")
+
+    as.zipWithIndex.map(t => (t._2, t._1, bs(t._2))).filter(x => x._2 != x._3).toList
+  }
+
+}
 

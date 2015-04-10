@@ -9,49 +9,54 @@ import engine.service.{Protocol => P}
 
 trait GroupManager extends ServiceCore[InternalGroupCmd, P.GroupCmd] {
 
+
+
   def interpret(context: User, cmd: P.GroupCmd): Err[InternalGroupCmd] = {
+    implicit def toFail(s: String): Err[InternalGroupCmd] = <~[InternalGroupCmd](s)
+    implicit def toSucc(a: InternalGroupCmd): Err[InternalGroupCmd] = ~>[InternalGroupCmd](a)
+
     cmd match {
-      case P.CreateGroup(lbl) => context.groups.filter(_.label == lbl) match {
-        case Nil => ~>[InternalGroupCmd](CreateGroup(context, lbl))
-        case _ => <~[InternalGroupCmd]("Duplicate Group Name. Names must be unique")
+      case P.CreateGroup(lbl, id) => context.groups.filter(_.label == lbl) match {
+        case Nil => CreateGroup(context, lbl, id)
+        case _ => "Duplicate Group Name. Names must be unique"
       }
       case P.RemoveGroup(g) => context.groups.exists(_.id == g) match {
-        case true => ~>[InternalGroupCmd](RemoveGroup(context, context.groups.filter(_.id == g).head))
-        case false => <~[InternalGroupCmd]("Unknown Group cannot be removed")
+        case true => RemoveGroup(context, context.groups.filter(_.id == g).head)
+        case false => "Unknown Group cannot be removed"
       }
       case P.AddChannelToGroup(id, c) =>
         context.channels.exists(_.id == c) && context.groups.exists(_.id == id) match {
         case true => {
           val g = context.groups.filter(_.id == id).head
           val channel = context.channels.filter(_.id == c).head
-           ~>[InternalGroupCmd](AddChannelToGroup(context, g, channel))
+           AddChannelToGroup(context, g, channel)
         }
-        case false => <~[InternalGroupCmd]("Invalid group <-> channel association")
+        case false => "Invalid group <-> channel association"
       }
       case P.RemoveChannelFromGroup(id, c) =>
         context.channels.exists(_.id == c) && context.groups.exists(_.id == id) match {
           case true => {
             val g = context.groups.filter(_.id == id).head
-            ~>[InternalGroupCmd](RemoveChannelFromGroup(context, g, c))
+            RemoveChannelFromGroup(context, g, c)
           }
-          case false => <~[InternalGroupCmd]("Invalid group <-> channel association")
+          case false => "Invalid group <-> channel association"
         }
       case P.AddContactToGroup(id, c) =>
         context.contacts.exists(_.id == c) && context.groups.exists(_.id == id) match {
           case true => {
             val g = context.groups.filter(_.id == id).head
             val contact = context.contacts.filter(_.id == c).head
-            ~>[InternalGroupCmd](AddContactToGroup(context, g, contact))
+            AddContactToGroup(context, g, contact)
           }
-          case false => <~[InternalGroupCmd]("Unknown group or contact")
+          case false => "Unknown group or contact"
         }
       case P.RemoveContactFromGroup(id, c) =>
         context.contacts.exists(_.id == c) && context.groups.exists(_.id == id) match {
           case true => {
             val g = context.groups.filter(_.id == id).head
-            ~>[InternalGroupCmd](RemoveContactFromGroup(context, g, c))
+            RemoveContactFromGroup(context, g, c)
           }
-          case false => <~[InternalGroupCmd]("Unknown group or contact")
+          case false => "Unknown group or contact"
         }
     }
   }
@@ -59,8 +64,8 @@ trait GroupManager extends ServiceCore[InternalGroupCmd, P.GroupCmd] {
   import GroupManager._
   def process(cmd: InternalGroupCmd): Err[User] = {
     cmd match {
-      case CreateGroup(u, lbl) =>{
-        val newG = Group(newId(), lbl, Nil, Nil)
+      case CreateGroup(u, lbl, id) =>{
+        val newG = Group(id,lbl, Nil, Nil)
         ~>(u.copy(groups = newG :: u.groups))
       }
       case RemoveGroup(u, grp) =>
@@ -87,25 +92,16 @@ trait GroupManager extends ServiceCore[InternalGroupCmd, P.GroupCmd] {
 
 }
 
-
-trait Context[T] {
-  val context: T
-}
-
-
 object GroupManager {
 
   // Commands
   sealed trait InternalGroupCmd extends Context[User]
-  case class CreateGroup(context: User, label: String) extends InternalGroupCmd
+  case class CreateGroup(context: User, label: String, id: GroupId) extends InternalGroupCmd
   case class RemoveGroup(context: User, g: Group) extends InternalGroupCmd
   case class AddChannelToGroup(context: User, g: Group, c: Channel) extends InternalGroupCmd
   case class RemoveChannelFromGroup(context: User, g: Group, c: ChannelId) extends InternalGroupCmd
   case class AddContactToGroup(context: User, g: Group, c: Contact) extends InternalGroupCmd
   case class RemoveContactFromGroup(context: User, g: Group, c: UserId) extends InternalGroupCmd
-
-
-  def newId() = GroupId(UUID.randomUUID().toString)
 
   private def swapGroup(u: User, g: Group, og: Group): User =
     u.copy(groups = g :: u.groups.filterNot(_ == og))

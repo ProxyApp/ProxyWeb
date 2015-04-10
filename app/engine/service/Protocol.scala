@@ -20,13 +20,29 @@ object Protocol {
    *  - Remove one of your channels from the group
    */
   sealed trait GroupCmd extends UserContextCmd
-  case class CreateGroup(label: String) extends GroupCmd
+  case class CreateGroup(label: String, id: GroupId) extends GroupCmd
   case class RemoveGroup(id: GroupId) extends GroupCmd
   case class AddChannelToGroup(id: GroupId, channel: ChannelId) extends GroupCmd
   case class RemoveChannelFromGroup(id: GroupId, channel: ChannelId) extends GroupCmd
   case class AddContactToGroup(id: GroupId, contactId: UserId) extends GroupCmd
   case class RemoveContactFromGroup(id: GroupId, contactId: UserId) extends GroupCmd
 
+
+  sealed trait ChannelCmd extends UserContextCmd
+  case class CreateWebChannel(id: ChannelId, label: String, url: String) extends ChannelCmd
+  case class RemoveWebChannel(id: ChannelId) extends ChannelCmd
+  case class CreateHandleChannel(tpe: SupportedHandle, handle: String) extends ChannelCmd
+  case class RemoveHandleChannel(tpe: SupportedHandle, handle: String) extends ChannelCmd
+
+  sealed trait SupportedHandle
+  object SupportedHandle {
+    case object Twitter extends SupportedHandle
+  }
+
+
+  sealed trait ContactCmd extends UserContextCmd
+  case class CreateContact(id: UserId) extends ContactCmd
+  case class RemoveContact(id: UserId) extends ContactCmd
 
   /**
    * Activities are things which do not modify the user context

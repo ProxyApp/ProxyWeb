@@ -6,6 +6,7 @@ import org.scalacheck.Properties
 import org.scalacheck.Prop._
 import proxyweb.Generators._
 import engine.service.{Protocol => P}
+import proxyweb.Util
 
 object GroupManagerSpec extends Properties("Group Manager"){
 
@@ -13,8 +14,8 @@ object GroupManagerSpec extends Properties("Group Manager"){
 
 
 
-  property("Group Names must be unique") = forAll(genUser)(u =>{
-    val createGrp = P.CreateGroup("Test")
+  property("Group Names must be unique") = forAll(genUser, groupId)((u, g) =>{
+    val createGrp = P.CreateGroup("Test", g)
 
     (for{
       a <- GrpManager.interpret(u, createGrp)
@@ -46,16 +47,59 @@ object GroupManagerSpec extends Properties("Group Manager"){
         _ => u.channels.exists(_.id == c.channel) && u.groups.exists(_.id == c.id))
     })
 
-  property("Command handling is idempotent") = forAll(genUser)(u => {
-    val createGrp = P.CreateGroup("abce")
+  property("May only remove a channel from a group if the group contains the channel") =
+    forAll(genUser.map(u => (u, genRemoveChannel(u).sample.head)))(t => {
+      val (u, c) = t
+      (for{
+        a <- GrpManager.interpret(u, c)
+        b <- GrpManager.process(a)
+      }yield a)
+      .fold( _ =>
+          !u.channels.exists(_.id == c.channel) ||
+            !u.groups.exists(g => g.id == c.id && g.channels.exists(_.id == c.channel)),
+      _ => u.channels.exists(_.id == c.channel) &&
+        u.groups.exists(g => g.id == c.id && g.channels.exists(_.id == c.channel)))
+    })
+
+  property("May only add a contact to a group if both group and contact exist") =
+    forAll(genUser.map(u => (u, genAddContact(u).sample.head)))(t => {
+      val (u, c) = t
+      (for{
+        a <- GrpManager.interpret(u, c)
+        b <- GrpManager.process(a)
+      }yield a)
+        .fold( _ =>
+        !u.contacts.exists(_.id == c.contactId) || !u.groups.exists(_.id == c.id),
+          _ => u.contacts.exists(_.id == c.contactId) && u.groups.exists(_.id == c.id))
+    })
+
+  property("May only remove a contact to if both group and contact exist") =
+    forAll(genUser.map(u => (u, genAddContact(u).sample.head)))(t => {
+      val (u, c) = t
+      (for{
+        a <- GrpManager.interpret(u, c)
+        b <- GrpManager.process(a)
+      }yield a)
+        .fold( _ =>
+        !u.contacts.exists(_.id == c.contactId) ||
+          !u.groups.exists(g => g.id == c.id && g.contacts.exists(_.id == c.contactId)),
+          _ => u.contacts.exists(_.id == c.contactId) &&
+            u.groups.exists(g => g.id == c.id && g.contacts.exists(_.id == c.contactId)))
+    })
+
+
+  property("Command handling is idempotent") =
+    forAll(genUser.map(u => (u, genGroupCmd(u).sample.head)))(t => {
+    val (u, cmd) = t
     (for{
-      a <- GrpManager.interpret(u, createGrp)
+      a <- GrpManager.interpret(u, cmd)
       b <- GrpManager.process(a)
-      c <- GrpManager.interpret(u, createGrp)
+      c <- GrpManager.interpret(u, cmd)
       d <- GrpManager.process(c)
-    } yield b == d)
-      .fold(_ => false, x => x)
+    } yield b == d) //note right now only ~1/2 of cases are legitimate
+      .fold(_ => true, x => x)
   })
+
 
 
 
