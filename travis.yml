@@ -5,4 +5,3 @@ scala:
 branches:
     only:
         - master
-        

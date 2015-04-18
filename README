@@ -1,4 +1,6 @@
-This is your new Play application
-=================================
+Proxy
+----------
 
-This file will be packaged with your application, when using `activator dist`.
+This is the webservice behind Proxy. For now it is based on Play, but the code is written to allow easily swapping out the REST layer.
+
+https://travis-ci.org/ProxyApp/ProxyWeb.svg?branch=master
