@@ -1,7 +1,10 @@
 language: scala
+jdk:
+    - oraclejdk8
 scala:
-    - "2.11.1"
-
+    - "2.11.6"
 branches:
     only:
         - master
+script: "sbt clean compile coverage test"
+after_success: "sbt coveralls"
