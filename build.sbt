@@ -6,13 +6,18 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.1"
 
+resolvers ++= Seq(
+  "anormcypher" at "http://repo.anormcypher.org/",
+  "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/"
+)
+
+
 libraryDependencies ++= Seq(
   jdbc,
   anorm,
   cache,
   ws,
-  "org.scalacheck"                %% "scalacheck"                       % "1.11.6"
-//  "com.sksamuel.scrimage"         %% "scrimage-core"                    % "1.4.2",
-//  "com.sksamuel.scrimage"         %% "scrimage-canvas"                  % "1.4.2",
-//  "com.sksamuel.scrimage"         %% "scrimage-filters"                 % "1.4.2"
+  "io.argonaut"                   %% "argonaut"                         % "6.0.4",
+  "org.scalacheck"                %% "scalacheck"                       % "1.11.6",
+  "org.anormcypher"               %% "anormcypher"                      % "0.6.0"
 )

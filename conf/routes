@@ -3,7 +3,41 @@
 # ~~~~
 
 # Home page
-GET     /                           proxy.controllers.Application.index
+GET     /                                       proxy.controllers.Application.index
+
+# User Context
+GET     /users                                  proxy.controllers.Users.all
+GET     /users/:id                              proxy.controllers.Users.user(id: String)
+GET     /users/:id/channels                     proxy.controllers.Users.channels(id: String)
+GET     /users/:id/channels/:cid                proxy.controller.Users.channel(id: String, cid: String)
+GET     /users/:id/groups                       proxy.controller.Users.groups(id: String)
+GET     /users/:id/groups/:gid                  proxy.controller.Users.group(id:String, gid: String)
+GET     /users/:id/groups/:gid/contacts         proxy.controller.Users.groupContacts(id:String, gid:String)
+GET     /users/:id/groups/:gid/channels         proxy.controller.Users.groupChannels(id:String, gid:String)
+GET     /users/:id/contacts                     proxy.controller.Users.contacts(id:String)
+
+# Each of these has a body with the payload
+POST    /users/:id/channels                     proxy.controller.Users.newChannel(id: String)
+POST    /users/:id/groups                       proxy.controller.Users.newGroup(id: String)
+POST    /users/:id/groups/:gid/contacts         proxy.controller.Users.newGroupContact(id: String, gid: String)
+POST    /users/:id/groups/:gid/channels         proxy.controller.Users.newGroupChannel(id: String, gid: String)
+
+# These are id only
+DELETE  /users/:id/channels/:cid                proxy.controller.Users.removeChannel(id: String, cid: String)
+DELETE  /users/:id/groups/:gid                  proxy.controller.Users.removeGroup(id: String, gid: String)
+DELETE  /users/:id/groups/:gid/contacts/:cid    proxy.controller.Users.removeContacts(id: String, gid: String, cid: String)
+DELETE  /users/:id/groups/:gid/channels/:cid    proxy.controller.Users.removeGroupChannel(id: String, gid: String, cid: String)
+
+# Full User Context replace
+PUT     /users/:id                              proxy.controller.Users.replaceContext(id: String)
+
+
+# Activities
+#GET     /search/users/
+
+# Profile Management
+
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
