@@ -21,5 +21,6 @@ libraryDependencies ++= Seq(
   ws,
   "io.argonaut"                   %% "argonaut"                         % "6.0.4",
   "org.scalacheck"                %% "scalacheck"                       % "1.11.6",
-  "org.anormcypher"               %% "anormcypher"                      % "0.6.0"
+  "org.anormcypher"               %% "anormcypher"                      % "0.6.0",
+  "org.julienrf"                  %% "play-json-variants"               % "1.1.0"
 )

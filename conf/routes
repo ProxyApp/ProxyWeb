@@ -9,7 +9,6 @@ GET     /                                       proxy.controllers.Application.in
 GET     /users                                  proxy.controllers.Users.all
 GET     /users/:id                              proxy.controllers.Users.user(id: String)
 GET     /users/:id/channels                     proxy.controllers.Users.channels(id: String)
-GET     /users/:id/channels/:cid                proxy.controllers.Users.channel(id: String, cid: String)
 GET     /users/:id/groups                       proxy.controllers.Users.groups(id: String)
 GET     /users/:id/groups/:gid                  proxy.controllers.Users.group(id:String, gid: String)
 GET     /users/:id/groups/:gid/contacts         proxy.controllers.Users.groupContacts(id:String, gid:String)

@@ -1,5 +1,7 @@
 package engine.service
 
+import java.util.UUID
+
 import engine.domain.Error._
 import engine.domain._
 import engine.service.ChannelManager.{RemoveWebChannel, CreateWebChannel, InternalChannelCmd}
@@ -39,6 +41,8 @@ trait ChannelManager extends ServiceCore[InternalChannelCmd, P.ChannelCmd]  {
 }
 
 object ChannelManager {
+
+  def nextId = ChannelId(UUID.randomUUID.toString)
 
   sealed trait InternalChannelCmd extends Context[User]
   case class CreateWebChannel(context: User,

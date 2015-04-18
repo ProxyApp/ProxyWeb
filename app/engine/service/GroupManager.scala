@@ -106,4 +106,6 @@ object GroupManager {
   private def swapGroup(u: User, g: Group, og: Group): User =
     u.copy(groups = g :: u.groups.filterNot(_ == og))
 
+  def nextId = GroupId(UUID.randomUUID.toString)
+
 }
