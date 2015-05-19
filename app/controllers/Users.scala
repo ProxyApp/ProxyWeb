@@ -1,6 +1,7 @@
 package proxy.controllers
 
 import engine.domain._
+import engine.io.storage.{FirebaseUserStorage, RestStorage}
 import engine.service.Protocol._
 import engine.service.{ContactManager, GroupManager, ChannelManager, UserService}
 import play.api.libs.json.{Writes, Json}
@@ -16,7 +17,7 @@ trait UsersContext extends Controller {
    * @return
    */
   def all = Action {
-    Ok(svc.allUsers)
+    Ok("Not Implemented")
   }
 
   /**
@@ -94,7 +95,7 @@ trait UsersContext extends Controller {
           b <- svc.channelManager.process(c)
         } yield b)
         .fold(e => BadRequest(e), r => {
-          svc.store += (UserId(id) -> r) // note this is a concurrency bug, needs to be synchronized
+          svc.store.writeContext(r)
           Ok(r)
         })
       )
@@ -110,7 +111,7 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(c)
       } yield b)
       .fold(e => BadRequest(e), r =>{
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       })
     )
@@ -129,7 +130,7 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       } yield b)
       .fold(e => BadRequest(e), r => {
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       })
     )
@@ -144,7 +145,7 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       }yield b)
       .fold(e => BadRequest(e),r  => {
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       })
     )
@@ -159,7 +160,7 @@ trait UsersContext extends Controller {
         b <- svc.channelManager.process(a)
       }yield b)
       .fold(e => BadRequest(e), r => {
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       })
     )
@@ -174,7 +175,7 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       } yield b)
       .fold(e => BadRequest(e), r => {
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       })
     )
@@ -189,7 +190,7 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       } yield b)
       .fold(e => BadRequest(e), r => {
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       }))
   }
@@ -203,7 +204,7 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       } yield b)
       .fold(e => BadRequest(e), r => {
-        svc.store += (UserId(id) -> r)
+        svc.store.writeContext(r)
         Ok(r)
       }))
   }
@@ -224,7 +225,7 @@ object Users extends UsersContext{
       def contact(id: UserId) = user(id).map(u => Contact(u.id, u.name, u.channels))
     }
     override val groupManager: GroupManager = new GroupManager {}
-    override var store: Map[UserId, User] = Map.empty[UserId, User]
+    override var store: RestStorage[User] = FirebaseUserStorage
   }
 
 }
