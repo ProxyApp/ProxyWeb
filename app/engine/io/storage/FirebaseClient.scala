@@ -21,12 +21,17 @@ object FirebaseClient extends Rest {
   override def delete(path: Path, secure: Boolean): Future[WSResponse] =
     firebasePath(path, secure).delete
 
-  private def firebasePath(path: Path, secure: Boolean): WSRequestHolder =
-   WS.url(s"http${if (secure) "s"}://${path.mkString("/", "/", ".json")}")
+  private def firebasePath(path: Path, secure: Boolean): WSRequestHolder = {
+    val url =  s"http${if (secure) "s"}://${path.mkString("", "/", ".json")}"
+    println(url)
+    WS.url(url)
+  }
 }
 
 object FirebaseUserStorage extends RestStorage[User] {
   private lazy val root = ConfigFactory.load().getString("Firebase.Root")
+
+  println(root)
 
   val client = FirebaseClient
   val f = (user: User) => {

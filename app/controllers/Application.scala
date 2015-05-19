@@ -17,4 +17,8 @@ object Application extends Controller {
     Ok(views.html.main("This Is Proxy")(views.html.groups.render()))
   }
 
+  def createUser = Action {
+    Ok(views.html.createUser(Authentication.createUserForm))
+  }
+
 }
