@@ -6,6 +6,5 @@ import org.scalacheck.Prop._
 
 object UsersContextSpec extends Properties("User context"){
 
-  property("can return all users") = secure( )
 
 }
