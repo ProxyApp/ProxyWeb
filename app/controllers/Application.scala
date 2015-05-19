@@ -9,4 +9,12 @@ object Application extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
 
+  def login = Action {
+    Ok(views.html.login(Authentication.loginAttemptForm))
+  }
+
+  def home = Action {
+    Ok(views.html.main("This Is Proxy")(views.html.groups.render()))
+  }
+
 }
