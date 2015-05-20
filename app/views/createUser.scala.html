@@ -30,12 +30,19 @@
 
   </h3>
 
+    <div align="center">
+      @helper.form(action = pR.Authentication.createNew(), 'class -> "form-horizontal"){
+            <div class="form-group-row">
+                @helper.inputText(createUser("first"))
+                @helper.inputText(createUser("last"))
+            </div>
+            <div class="form-group-row">
+                @helper.inputText(createUser("email"))
+                @helper.inputText(createUser("pw"))
+            </div>
 
-  @helper.form(action = pR.Authentication.createNew()){
-  @helper.inputText(createUser("email"))
-  @helper.inputText(createUser("pw"))
-  @helper.inputText(createUser("name"))
-  <input type="submit" value="Sign Up"     name="createNew" >
-  }
+            <input type="submit" value="Sign Up"     name="createNew" > }
+    </div>
+
 </body>
 </html>

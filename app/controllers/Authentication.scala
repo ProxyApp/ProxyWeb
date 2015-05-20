@@ -71,10 +71,9 @@ trait AuthenticationContext extends Controller {
 
       }
     })
-
-
   }
 
+  private def generateToken = "Test"
 }
 
 object Authentication extends AuthenticationContext {
