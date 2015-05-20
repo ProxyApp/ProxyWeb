@@ -222,7 +222,7 @@ object Users extends UsersContext{
     override val channelManager: ChannelManager = new ChannelManager {}
     override val contactManager: ContactManager = new ContactManager {
       //note this is a bs implementation. I need to filter out channels taht I do not have access to
-      def contact(id: UserId) = user(id).map(u => Contact(u.id, u.name, u.channels))
+      def contact(id: UserId) = user(id).map(u => Contact(u.id, u.first + " " + u.last, u.channels))
     }
     override val groupManager: GroupManager = new GroupManager {}
     override var store: RestStorage[User] = FirebaseUserStorage

@@ -2,20 +2,17 @@ package proxy.controllers
 
 import java.util.UUID
 
-import engine.domain.{Email, UserId, User}
+import engine.domain.{ UserId, User}
 import engine.domain.json._
 import engine.io.storage.{FirebaseUserStorage, RestStorage}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-
 import scala.concurrent.{Await}
 import scala.concurrent.duration._
 
-
-
 case class LoginAttempt(email: String, pw: String)
-case class NewUser(email: String, pw: String, name: String)
+case class NewUser(email: String, pw: String, first: String, last: String)
 case class UserPwLookup(email: String, pw: String, id: UserId)
 
 trait AuthenticationContext extends Controller {
@@ -32,7 +29,8 @@ trait AuthenticationContext extends Controller {
     mapping(
       "email" -> nonEmptyText.verifying(_.contains("@")),
       "pw" -> nonEmptyText,
-      "name" -> nonEmptyText)(NewUser.apply)(NewUser.unapply)
+      "first" -> nonEmptyText,
+      "last" -> nonEmptyText)(NewUser.apply)(NewUser.unapply)
   )
 
   def validate = Action { implicit request =>
@@ -42,8 +40,8 @@ trait AuthenticationContext extends Controller {
       case userData@LoginAttempt("me@proxy.com", "pw") => {
         val newUser = User(
           UserId("TestUserId"),
-          "Chris Coffey",
-          Email(userData.email),
+          "Chris",  "Coffey",
+          userData.email,
           Nil,
           Nil,
           Nil)
@@ -59,9 +57,9 @@ trait AuthenticationContext extends Controller {
     createUserForm.bindFromRequest.fold(req => {
       BadRequest(views.html.login(loginAttemptForm, "Bad Username or Password"))
     }, {
-      case NewUser(email, pw, name) => {
-        val newUser = User(UserId(UUID.randomUUID().toString), name, Email(email), Nil, Nil, Nil)
-        val emailNamePwTuple = UserPwLookup(email, pw, newUser.id)
+      case NewUser(mail, pw, fst, lst) => {
+        val newUser = User(UserId(UUID.randomUUID().toString), fst, lst, mail, Nil, Nil, Nil)
+        val emailNamePwTuple = UserPwLookup(mail, pw, newUser.id)
 
         println(store.f(newUser))
         val res =  Await.result(store.writeContext(newUser), 60 seconds)

@@ -50,14 +50,15 @@ object Generators {
 
   def genUser = for {
     id <- userId
-    name <- Gen.alphaStr
-    email <- Gen.alphaStr.map(Email(_))
+    first <- Gen.alphaStr
+    last <- Gen.alphaStr
+    email <- Gen.alphaStr
     m <- Gen.choose(1, 5)
     channels <- Gen.listOfN(m, genChannel)
     n <- Gen.choose(1, 5)
     contacts <- genLsContact(n)
     grps <- Gen.listOfN(m, genGroup)
-  } yield User(id, name, email, channels, contacts, grps)
+  } yield User(id, first, last, email, channels, contacts, grps)
 
 
   def genRemoveGroup(g: GroupId) = for{

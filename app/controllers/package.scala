@@ -23,8 +23,6 @@ package object json {
   implicit val conw = Json.writes[Contact]
   implicit val gr = Json.reads[Group]
   implicit val gw = Json.writes[Group]
-  implicit val er = Json.reads[Email]
-  implicit val ew = Json.writes[Email]
   implicit val ur = Json.reads[User]
   implicit val uw = Json.writes[User]
 
