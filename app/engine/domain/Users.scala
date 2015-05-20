@@ -1,17 +1,17 @@
 package engine.domain
 
 
-case class Email(value: String)
 case class User(id: UserId,
-                name: String,
-                email: Email,
+                first: String,
+                last: String,
+                email: String,
                 channels: List[Channel],
                 contacts: List[Contact],
                 groups: List[Group]) extends Identifiable[UserId]
 
 object User {
 
-  val Identity = User(UserId(""), "", Email(""), Nil, Nil, Nil)
+  val Identity = User(UserId(""), "", "", "", Nil, Nil, Nil)
 
   def webChannels(u: User): List[WebChannel] =
    u.channels.foldLeft[List[WebChannel]](Nil)((acc, i) =>

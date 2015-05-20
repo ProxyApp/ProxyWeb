@@ -3,7 +3,13 @@
 # ~~~~
 
 # Home page
-GET     /                                       proxy.controllers.Application.index
+GET     /                                       proxy.controllers.Application.login
+GET     /home                                   proxy.controllers.Application.home
+GET     /createUser                             proxy.controllers.Application.createUser
+
+# Login
+POST /loginAttempt                              proxy.controllers.Authentication.validate
+POST /users                                     proxy.controllers.Authentication.createNew
 
 # User Context
 GET     /users                                  proxy.controllers.Users.all
