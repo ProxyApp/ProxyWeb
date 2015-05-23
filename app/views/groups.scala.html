@@ -5,7 +5,7 @@
 
 <div class="container-fluid">
     <div class="col-md-9 col-md-push-3">
-        <h3><span class="label label-default">Favorites</span></h3>
+        <h3><span class="label label-default" id="currentGroup">Favorites</span></h3>
         <div class="row">
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="img-rounded">
@@ -37,7 +37,7 @@
             <li class="list-group-item" id="groupItemList">
                 @for(g <- user.groups) {
                     <li id=@g.id.value>
-                    @g.label
+                    <span class="groupName">@g.label</span>
                     <!-- TODO add an update group button -->
                         <button class="deleteGroupBtn btn btn-default">Delete</button>
                     </li>

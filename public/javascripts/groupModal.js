@@ -12,6 +12,11 @@ $(document).ready(function(){
         })
     });
 
+    $(".groupName").click(function(){
+        var grpName = $(this).text();
+        $("#currentGroup").text(grpName);
+    })
+
     $(".deleteGroupBtn").click(function(){
         var userId = $.cookie("user");
         var groupId = $(this).parent().attr("id");
@@ -23,4 +28,6 @@ $(document).ready(function(){
             type: "DELETE"
         })
     })
+
+
 });
