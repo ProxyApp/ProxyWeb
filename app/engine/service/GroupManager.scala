@@ -21,7 +21,10 @@ trait GroupManager extends ServiceCore[InternalGroupCmd, P.GroupCmd] {
         case _ => "Duplicate Group Name. Names must be unique"
       }
       case P.RemoveGroup(g) => context.groups.exists(_.id == g) match {
-        case true => RemoveGroup(context, context.groups.filter(_.id == g).head)
+        case true => context.groups.length match {
+          case 1 => "Cannot Remove your last group for now!"
+          case _ =>  RemoveGroup(context, context.groups.filter(_.id == g).head)
+        }
         case false => "Unknown Group cannot be removed"
       }
       case P.AddChannelToGroup(id, c) =>
