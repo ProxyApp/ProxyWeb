@@ -1,6 +1,7 @@
 package proxy.controllers
 
 import engine.domain._
+import engine.domain.{json => eJ}
 import engine.io.storage.{FirebaseUserStorage, RestStorage}
 import engine.service.Protocol._
 import engine.service.{ContactManager, GroupManager, ChannelManager, UserService}
@@ -103,20 +104,20 @@ trait UsersContext extends Controller {
       )
     }
 
-  def newGroup(id: String) = Action(parse.json[WireCreateGroup]) { req =>
-    val w = req.body
-    val p = CreateGroup(w.label, GroupManager.nextId)
-    svc.user(UserId(id))
-      .fold(NotFound(id))(u =>
-      (for {
-        c <- svc.groupManager.interpret(u, p)
-        b <- svc.groupManager.process(c)
-      } yield b)
-      .fold(e => BadRequest(e), r =>{
-        svc.store.writeContext(r)
-        Ok(r)
-      })
-    )
+  def newGroup(id: String) = Action(parse.json) { req =>
+    req.body.validate[WireCreateGroup].map { w =>
+      val p = CreateGroup(w.label, GroupManager.nextId)
+      svc.user(UserId(id))
+        .fold(NotFound(id))(u =>
+        (for {
+          c <- svc.groupManager.interpret(u, p)
+          b <- svc.groupManager.process(c)
+        } yield b)
+          .fold(e => BadRequest(e), r =>{
+          svc.store.writeContext(r)(eJ.user)
+          Ok(eJ.user.writes(r))
+        }))
+    }.getOrElse(BadRequest("Not valid Json"))
   }
 
   //todo ccoffey actually implement this

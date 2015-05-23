@@ -41,22 +41,23 @@ trait RestStorage[A] {
       println(x)
       val j = Json.parse(x)
       val a = j.validate[A]
-      a.get
+      a.asOpt
     }))
 
   def writeContext(data: A)(implicit writes: Writes[A]): Future[Either[String, A]] ={
     val serialized = writes.writes(data)
     println(serialized)
 
-    client.put(f(data), writes.writes(data)).map(handleResponse(_, x => data))
+    client.put(f(data), writes.writes(data)).map(handleResponse(_, x => Some(data)))
   }
 
   def removeContext(data: A): Future[Either[String, A]] =
-    client.delete(f(data)).map(handleResponse(_, (x) => data))
+    client.delete(f(data)).map(handleResponse(_, (x) => Some(data)))
 
-  private def handleResponse(r: WSResponse, g: String => A) =
+  private def handleResponse(r: WSResponse, g: String => Option[A]) =
     r.status match {
-      case x if x >= 200 && x < 300 => Right(g(r.body))
+      case x if x >= 200 && x < 300 => g(r.body)
+        .fold[Either[String, A]](Left("Could not process Json Response"))(a => Right(a))
       case x if x >= 400 => {
         Logger.error(r.statusText)
         Left(r.statusText)

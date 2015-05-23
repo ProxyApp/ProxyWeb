@@ -65,7 +65,7 @@ trait GroupManager extends ServiceCore[InternalGroupCmd, P.GroupCmd] {
   def process(cmd: InternalGroupCmd): Err[User] = {
     cmd match {
       case CreateGroup(u, lbl, id) =>{
-        val newG = Group(id,lbl, Nil, Nil)
+        val newG = Group(id,lbl, IdentityChannel.Default :: Nil, Contact.Identity :: Nil)
         ~>(u.copy(groups = newG :: u.groups))
       }
       case RemoveGroup(u, grp) =>
