@@ -36,9 +36,10 @@
         <ul class="list-group" id="groupList">
             <li class="list-group-item" id="groupItemList">
                 @for(g <- user.groups) {
-                    <li>
+                    <li id=@g.id.value>
                     @g.label
                     <!-- TODO add an update group button -->
+                        <button class="deleteGroupBtn btn btn-default">Delete</button>
                     </li>
                 }
                 <button id="newGroupButton" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createGroupModal">

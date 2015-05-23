@@ -11,4 +11,16 @@ $(document).ready(function(){
             type: "POST"
         })
     });
+
+    $(".deleteGroupBtn").click(function(){
+        var userId = $.cookie("user");
+        var groupId = $(this).parent().attr("id");
+
+        $.ajax("users/"+userId+"/groups/"+groupId, {
+            success: function(data) {
+               $("#"+groupId).remove();
+            },
+            type: "DELETE"
+        })
+    })
 });
