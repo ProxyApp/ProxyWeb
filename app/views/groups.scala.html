@@ -1,25 +1,30 @@
+@import engine.domain._
+
+@(user: User)
+
+
 <div class="container-fluid">
     <div class="col-md-9 col-md-push-3">
         <h3><span class="label label-default">Favorites</span></h3>
         <div class="row">
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/ProxyLogo.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
                 </a>
             </div>
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/ProxyLarge.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
                 </a>
             </div>
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/ProxyLogo.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
                 </a>
             </div>
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/ProxyLarge.png")" alt="..." style="height: 180px; width: 100%; display: block;">
+                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
                 </a>
             </div>
         </div>
@@ -28,13 +33,59 @@
     <div class="col-md-3 col-md-pull-9">
 
         <!-- List group -->
-        <ul class="list-group">
-            <li class="list-group-item">Favorites</li>
-            <li class="list-group-item">Family</li>
-            <li class="list-group-item">Friends</li>
-            <li class="list-group-item">Acquaintances</li>
-            <li class="list-group-item">Businesses</li>
+        <ul class="list-group" id="groupList">
+            <li class="list-group-item" id="groupItemList">
+                @for(g <- user.groups) {
+                    <li>
+                    @g.label
+                    <!-- TODO add an update group button -->
+                    </li>
+                }
+                <button id="newGroupButton" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createGroupModal">
+                    New Group
+                </button>
+            </li>
         </ul>
     </div>
 
+    <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="createGroupModalLabel">New Group</h4>
+                </div>
+                <div class="modal-body">
+                    <label>Name</label>
+                    <input type="text" id="newGroupName">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createGroupSaveBtn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateChannelModal" tabindex="-1" role="dialog" aria-labelledby="updateChannelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="updateChannelModalLabel">Update Channels</h4>
+                </div>
+                <div class="modal-body" id="updateChannelBody">
+                    @for(c <- user.channels) {
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 </div>
+<script src="@routes.Assets.at("javascripts/groupModal.js")"></script>

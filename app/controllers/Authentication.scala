@@ -2,9 +2,10 @@ package proxy.controllers
 
 import java.util.UUID
 
-import engine.domain.{ UserId, User}
+import engine.domain._
 import engine.domain.json._
 import engine.io.storage.{FirebaseUserStorage, RestStorage}
+import Tokens.Cookies._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -39,7 +40,7 @@ trait AuthenticationContext extends Controller {
     }, {
       case userData@LoginAttempt("me@proxy.com", "pw") => {
         val newUser = User(
-          UserId("TestUserId"),
+          UserId("be1d199e-1169-40f7-ad18-99628540550f"),
           "Chris",  "Coffey",
           userData.email,
           Nil,
@@ -48,6 +49,7 @@ trait AuthenticationContext extends Controller {
 
         //todo create a real mapping of user data to the page
         Redirect(routes.Application.home())
+          .withCookies(Cookie(User_Information, "be1d199e-1169-40f7-ad18-99628540550f"))
       }
       case _ => BadRequest(views.html.login(loginAttemptForm, "Bad Username or Password"))
     } )
@@ -58,15 +60,22 @@ trait AuthenticationContext extends Controller {
       BadRequest(views.html.login(loginAttemptForm, "Bad Username or Password"))
     }, {
       case NewUser(mail, pw, fst, lst) => {
-        val newUser = User(UserId(UUID.randomUUID().toString), fst, lst, mail, Nil, Nil, Nil)
+        val newUser = User(UserId(UUID.randomUUID().toString), fst, lst, mail,
+          IdentityChannel.Default :: Nil,
+          Contact.Identity :: Nil,
+          Group.Identity :: Nil)
         val emailNamePwTuple = UserPwLookup(mail, pw, newUser.id)
 
-        println(store.f(newUser))
         val res =  Await.result(store.writeContext(newUser), 60 seconds)
 
         res match {
-          case Left(s) => BadRequest(views.html.login(loginAttemptForm, "Could not create User"))
-          case Right(u) => Redirect(routes.Application.home())
+          case Left(s) => {
+            println(s)
+            BadRequest(views.html.login(loginAttemptForm, "Could not create User"))
+          }
+          case Right(u) =>
+            Redirect(routes.Application.home())
+              .withCookies(Cookie(User_Information, newUser.id.value, Some(2419200), httpOnly= false))
         }
 
       }

@@ -37,17 +37,27 @@ trait RestStorage[A] {
   val f: A => Path //this isn't a great signature, but its good enough
 
   def readContext(key: A)(implicit reads: Reads[A]): Future[Either[String, A]] =
-    client.get(f(key)).map(handleResponse(_, (x) => Json.parse(x).as[A]))
+    client.get(f(key)).map(handleResponse(_, (x) => {
+      println(x)
+      val j = Json.parse(x)
+      val a = j.validate[A]
+      a.asOpt
+    }))
 
-  def writeContext(data: A)(implicit writes: Writes[A]): Future[Either[String, A]] =
-    client.put(f(data), writes.writes(data)).map(handleResponse(_, x => data))
+  def writeContext(data: A)(implicit writes: Writes[A]): Future[Either[String, A]] ={
+    val serialized = writes.writes(data)
+    println(serialized)
+
+    client.put(f(data), writes.writes(data)).map(handleResponse(_, x => Some(data)))
+  }
 
   def removeContext(data: A): Future[Either[String, A]] =
-    client.delete(f(data)).map(handleResponse(_, (x) => data))
+    client.delete(f(data)).map(handleResponse(_, (x) => Some(data)))
 
-  private def handleResponse(r: WSResponse, g: String => A) =
+  private def handleResponse(r: WSResponse, g: String => Option[A]) =
     r.status match {
-      case x if x >= 200 && x < 300 => Right(g(r.body))
+      case x if x >= 200 && x < 300 => g(r.body)
+        .fold[Either[String, A]](Left("Could not process Json Response"))(a => Right(a))
       case x if x >= 400 => {
         Logger.error(r.statusText)
         Left(r.statusText)

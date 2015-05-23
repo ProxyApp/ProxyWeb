@@ -7,10 +7,11 @@ package object json{
 
 
   implicit val channelId= Json.format[ChannelId]
-  implicit val channel = Variants.format[Channel]
+  implicit val webChannel = Json.format[WebChannel]
+  implicit val identityChannel = Json.format[IdentityChannel]
+  implicit val channel: Format[Channel] = Variants.format[Channel]("type")
   implicit val userId= Json.format[UserId]
   implicit val groupId = Json.format[GroupId]
-  implicit val webChannel = Json.format[WebChannel]
   implicit val contact = Json.format[Contact]
   implicit val group = Json.format[Group]
 
