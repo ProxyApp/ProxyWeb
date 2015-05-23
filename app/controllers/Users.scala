@@ -4,6 +4,8 @@ import engine.domain._
 import engine.io.storage.{FirebaseUserStorage, RestStorage}
 import engine.service.Protocol._
 import engine.service.{ContactManager, GroupManager, ChannelManager, UserService}
+import play.api.data.Forms._
+import play.api.data.Form
 import play.api.libs.json.{Writes, Json}
 import play.api.mvc._
 import proxy.controllers.json._
@@ -229,5 +231,7 @@ object Users extends UsersContext{
   }
 
 }
+
+case class BatchUpdateChannel(m: Map[String, Boolean])
 
 

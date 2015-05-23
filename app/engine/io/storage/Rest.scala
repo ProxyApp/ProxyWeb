@@ -37,10 +37,19 @@ trait RestStorage[A] {
   val f: A => Path //this isn't a great signature, but its good enough
 
   def readContext(key: A)(implicit reads: Reads[A]): Future[Either[String, A]] =
-    client.get(f(key)).map(handleResponse(_, (x) => Json.parse(x).as[A]))
+    client.get(f(key)).map(handleResponse(_, (x) => {
+      println(x)
+      val j = Json.parse(x)
+      val a = j.validate[A]
+      a.get
+    }))
 
-  def writeContext(data: A)(implicit writes: Writes[A]): Future[Either[String, A]] =
+  def writeContext(data: A)(implicit writes: Writes[A]): Future[Either[String, A]] ={
+    val serialized = writes.writes(data)
+    println(serialized)
+
     client.put(f(data), writes.writes(data)).map(handleResponse(_, x => data))
+  }
 
   def removeContext(data: A): Future[Either[String, A]] =
     client.delete(f(data)).map(handleResponse(_, (x) => data))

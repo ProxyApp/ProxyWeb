@@ -12,8 +12,9 @@ import play.api.Play.current
 import scala.concurrent.Future
 
 object FirebaseClient extends Rest {
-  override def put[T](path: Path, body: T, secure: Boolean)(implicit writes: Writes[T]): Future[WSResponse] =
+  override def put[T](path: Path, body: T, secure: Boolean)(implicit writes: Writes[T]): Future[WSResponse] ={
     firebasePath(path, secure).put(writes.writes(body))
+  }
 
   override def get[T](path: Path, secure: Boolean)(implicit reads: Reads[T]): Future[WSResponse] =
     firebasePath(path, secure).get
@@ -30,11 +31,8 @@ object FirebaseClient extends Rest {
 
 object FirebaseUserStorage extends RestStorage[User] {
   private lazy val root = ConfigFactory.load().getString("Firebase.Root")
-
-  println(root)
-
   val client = FirebaseClient
   val f = (user: User) => {
-    Rest.path(root, "users", user.id.value)
+    Rest.path(root, "webusers", user.id.value)
   }
 }
