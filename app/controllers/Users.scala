@@ -148,8 +148,8 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       }yield b)
       .fold(e => BadRequest(e),r  => {
-        svc.store.writeContext(r)
-        Ok(r)
+        svc.store.writeContext(r)(eJ.user)
+        Ok(eJ.user.writes(r))
       })
     )
   }
@@ -207,8 +207,8 @@ trait UsersContext extends Controller {
         b <- svc.groupManager.process(a)
       } yield b)
       .fold(e => BadRequest(e), r => {
-        svc.store.writeContext(r)
-        Ok(r)
+        svc.store.writeContext(r)(eJ.user)
+        Ok(eJ.user.writes(r))
       }))
   }
 
