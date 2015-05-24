@@ -1,36 +1,184 @@
 @import engine.domain._
 
-
+@(user: User)
 
 <div class="container-fluid">
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="coll-lg-10">
+            <button type="buton" class="btn btn-primary" data-toggle="modal" data-target="#createChannelModal">New Channel</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-10 page-header">
             <h1>Chat</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Chat)) {
+                <a href=@Channel.href(c) class="img-circle">
+                    <p>
+                        <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                    </p>
+                    <p>
+                    <div class="label label-default">@c.label</div>
+                    </p>
+                </a>
+            }
         </div>
     </div>
     <div class="row">
         <div class="col-lg-10 page-header">
             <h1>Share</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Share)) {
+            <a href=@Channel.href(c) class="img-circle">
+                <p>
+                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                </p>
+                <p>
+                    <div class="label label-default">@c.label</div>
+                </p>
+            </a>
+            }
         </div>
     </div>
     <div class="row">
         <div class="col-lg-10 page-header">
             <h1>Locate</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Locate)) {
+            <a href=@Channel.href(c) class="img-circle">
+                <p>
+                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                </p>
+                <p>
+                <div class="label label-default">@c.label</div>
+                </p>
+            </a>
+            }
         </div>
     </div>
     <div class="row">
         <div class="col-lg-10 page-header">
             <h1>Schedule</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Schedule)) {
+            <a href=@Channel.href(c) class="img-circle">
+                <p>
+                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                </p>
+                <p>
+                <div class="label label-default">@c.label</div>
+                </p>
+            </a>
+            }
         </div>
     </div>
     <div class="row">
         <div class="col-lg-10 page-header">
             <h1>Transact</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Transact)) {
+            <a href=@Channel.href(c) class="img-circle">
+                <p>
+                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                </p>
+                <p>
+                <div class="label label-default">@c.label</div>
+                </p>
+            </a>
+            }
         </div>
     </div>
     <div class="row">
         <div class="col-lg-10 page-header">
             <h1>Play</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Play)) {
+            <a href=@Channel.href(c) class="img-circle">
+                <p>
+                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                </p>
+                <p>
+                <div class="label label-default">@c.label</div>
+                </p>
+            </a>
+            }
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-10 page-header">
+            <h1>General</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.General)) {
+            <a href=@Channel.href(c) class="img-circle">
+                <p>
+                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                </p>
+                <p>
+                <div class="label label-default">@c.label</div>
+                </p>
+            </a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createChannelModal" tabindex="-1" role="dialog" aria-labelledby="createChannelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                <h4 class="modal-title">New Channel</h4>
+            </div>
+            <div class="modal-body">
+                <div role="tabpanel">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#createWeb" aria-controls="createWeb" role="tab" data-toggle="tab">Web</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#createPhone" aria-controls="createPhone" role="tab" data-toggle="tab">Phone</a>
+                        </li>
+                    </ul>
+
+                    <br>
+
+                    <p>
+                        <label>Name</label>
+                        <input type="text" id="webName">
+                    </p>
+                    <p>
+                        <label>Section</label>
+                        <br>
+                        @for(c <- ChannelSection.sections){
+                                    <span>
+                                        @c
+                                        <input type="checkbox" class="sectionCheck" id="chk_@c" value="1">
+                                    </span>
+                        }
+                    </p>
+
+                    <br>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="createWeb">
+                            <p>
+                                <label>Web Address</label>
+                                <input type="text" id="webUrl">
+                            </p>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="createPhone">
+                            <p>
+                                <label>Phone Number </label>
+                                <input type="text" id="phoneNumber">
+                                <br>
+                                <label>Call?</label>
+                                <input type="checkbox" id="checkPhoneCall">
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="close" data-dismiss="modal" aria-label="Close" id="createChanelSave">Complete</button>
+            </div>
+        </div>
+    </div>
+
 </div>

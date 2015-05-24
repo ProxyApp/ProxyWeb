@@ -37,22 +37,17 @@ object Application extends Controller {
       val user = s.split("=")(1)
       Await.result(Users.svc.store.readContext(User.userKey(UserId(user)))(eJ.user), 10 seconds) match {
         case Right(usr) => {
-//          val share = usr.channels.filter(_.channelSection == ChannelSection.Share)
-//          val locate = usr.channels.filter(_.channelSection == ChannelSection.Locate)
-//          val chat = usr.channels.filter(_.channelSection == ChannelSection.Chat)
-//          val transact = usr.channels.filter(_.channelSection == ChannelSection.Transact)
-//          val play = usr.channels.filter(_.channelSection == ChannelSection.Play)
-//          val schedule = usr.channels.filter(_.channelSection == ChannelSection.Schedule)
+          val share = usr.channels.filter(_.channelSection == ChannelSection.Share)
+          val locate = usr.channels.filter(_.channelSection == ChannelSection.Locate)
+          val chat = usr.channels.filter(_.channelSection == ChannelSection.Chat)
+          val transact = usr.channels.filter(_.channelSection == ChannelSection.Transact)
+          val play = usr.channels.filter(_.channelSection == ChannelSection.Play)
+          val schedule = usr.channels.filter(_.channelSection == ChannelSection.Schedule)
+          val general = usr.channels.filter(_.channelSection == ChannelSection.General)
 
-//          views.html.main("This Is Proxy", usr)(views.html.channels.render(usr,
-//            chat,
-//            share,
-//            locate,
-//            schedule,
-//            transact,
-//            play))
+          Ok(views.html.main("This Is Proxy", usr)(views.html.channels.render(usr)))
 
-          Ok(views.html.main("This Is Proxy", usr)(views.html.channels.render()))
+         // Ok(views.html.main("This Is Proxy", usr)(views.html.channels.render()))
 
         }
         case _ =>
