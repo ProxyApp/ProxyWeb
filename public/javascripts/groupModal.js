@@ -5,8 +5,9 @@ $(document).ready(function(){
         $.ajax("users/"+userId+"/groups", {
             data: JSON.stringify({label: grpName}),
             success: function(data) {
-             $("#groupItemList").prepend("<li>" + grpName + "</li>");
-             },
+                location.reload();
+             }
+             ,
             contentType: "application/json",
             type: "POST"
         })
@@ -19,7 +20,7 @@ $(document).ready(function(){
 
     $(".deleteGroupBtn").click(function(){
         var userId = $.cookie("user");
-        var groupId = $(this).parent().attr("id");
+        var groupId = $(this).parent().parent().attr("id");
 
         $.ajax("users/"+userId+"/groups/"+groupId, {
             success: function(data) {

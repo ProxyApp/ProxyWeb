@@ -45,8 +45,10 @@
 </div>
 <script>
     $(document).ready(function(){
+
         $(".groupCheckBox").change(function() {
             var id = $(this).attr("id").split("||");
+            console.log("called for "+id);
             var groupId = id[0];
             var channelId = id[1];
 
