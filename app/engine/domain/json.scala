@@ -5,7 +5,6 @@ import julienrf.variants.Variants
 
 package object json{
 
-
   implicit val channelId= Json.format[ChannelId]
   implicit val webChannel = Json.format[WebChannel]
   implicit val identityChannel = Json.format[IdentityChannel]

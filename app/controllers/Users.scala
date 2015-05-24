@@ -90,7 +90,11 @@ trait UsersContext extends Controller {
 
   def newChannel(id: String) = Action(parse.json[WireCreateWebChannel]) { request =>
       val wire = request.body
-      val protocol = CreateWebChannel(ChannelManager.nextId, wire.label, wire.url)
+      val protocol = CreateWebChannel(
+        ChannelManager.nextId,
+        wire.label,
+        wire.url,
+        wire.section)
       svc.user(UserId(id))
         .fold(NotFound(id))(u =>
         (for{

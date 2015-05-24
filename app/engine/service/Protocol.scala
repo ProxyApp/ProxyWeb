@@ -29,7 +29,7 @@ object Protocol {
 
 
   sealed trait ChannelCmd extends UserContextCmd
-  case class CreateWebChannel(id: ChannelId, label: String, url: String) extends ChannelCmd
+  case class CreateWebChannel(id: ChannelId, label: String, url: String, section: String) extends ChannelCmd
   case class RemoveWebChannel(id: ChannelId) extends ChannelCmd
   case class CreateHandleChannel(tpe: SupportedHandle, handle: String) extends ChannelCmd
   case class RemoveHandleChannel(tpe: SupportedHandle, handle: String) extends ChannelCmd

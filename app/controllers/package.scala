@@ -26,7 +26,7 @@ package object json {
   implicit val ur = Json.reads[User]
   implicit val uw = Json.writes[User]
 
-  case class WireCreateWebChannel(label: String, url: String)
+  case class WireCreateWebChannel(label: String, url: String, section: String)
   object WireCreateWebChannel {
     implicit val r = Json.reads[WireCreateWebChannel]
     implicit val w = Json.writes[WireCreateWebChannel]
