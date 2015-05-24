@@ -5,7 +5,7 @@
 
 <div class="container-fluid">
     <div class="col-md-9 col-md-push-3">
-        <h3><span class="label label-default" id="currentGroup">Favorites</span></h3>
+        <h3><span class="label label-default" id="currentGroup">@user.groups.head.label</span></h3>
         <div class="row">
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="img-rounded">
@@ -30,24 +30,27 @@
         </div>
     </div>
 
-    <div class="col-md-3 col-md-pull-9">
-
-        <!-- List group -->
-        <ul class="list-group" id="groupList">
-            <li class="list-group-item" id="groupItemList">
-                @for(g <- user.groups) {
-                    <li id=@g.id.value>
-                        <span class="groupName">@g.label</span>
-                        <button class="deleteGroupBtn btn btn-default">Delete</button>
-                        <button class="editGroupBtn btn btn-secondary" data-toggle="modal" data-target="#eg_@g.id.value">Edit</button>
-                        @editGroup(g, user)
-                    </li>
-                }
-                <button id="newGroupButton" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createGroupModal">
-                    New Group
-                </button>
-            </li>
-        </ul>
+    <div class="col-md-3 col-md-pull-9 panel panel-default">
+       <div class="panel-heading">
+           <h3 class="panel-title">Groups</h3>
+       </div>
+        <div id="groupItemList" class="panel-body">
+            @for(g <- user.groups) {
+            <div id=@g.id.value class="row">
+                <div class="col-lg-12">
+                    <span class="groupName pull-left label label-primary">@g.label</span>
+                    <button class="editGroupBtn btn btn-secondary btn-sm pull-right" data-toggle="modal" data-target="#eg_@g.id.value">Edit</button>
+                    <button class="deleteGroupBtn btn btn-default btn-sm pull-right">Delete</button>
+                    @editGroup(g, user)
+                </div>
+            </div>
+            }
+        </div>
+        <div class="panel-footer">
+          <button id="newGroupButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createGroupModal">
+              New Group
+          </button>
+        </div>
     </div>
 
     <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="createGroupModalLabel" aria-hidden="true">
