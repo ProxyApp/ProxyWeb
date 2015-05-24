@@ -68,25 +68,27 @@ trait GroupManager extends ServiceCore[InternalGroupCmd, P.GroupCmd] {
   def process(cmd: InternalGroupCmd): Err[User] = {
     cmd match {
       case CreateGroup(u, lbl, id) =>{
-        val newG = Group(id,lbl, IdentityChannel.Default :: Nil, Contact.Identity :: Nil)
+        val newG = Group(id,lbl, None, None)
         ~>(u.copy(groups = newG :: u.groups))
       }
       case RemoveGroup(u, grp) =>
         ~>(u.copy(groups = u.groups.filterNot(_ == grp)))
       case AddChannelToGroup(u, grp, c) => {
-        val newG = grp.copy(channels =  c :: grp.channels)
+        val cs = grp.channels.getOrElse(Nil)
+        val newG = grp.copy(channels =  Some(c :: cs))
         ~>(swapGroup(u, newG, grp))
       }
       case RemoveChannelFromGroup(u, grp, c) => {
-        val ng = grp.copy(channels = grp.channels.filterNot(_.id == c))
+        val ng = grp.copy(channels = grp.channels.map(_.filterNot(_.id == c)))
         ~>(swapGroup(u, ng, grp))
       }
       case AddContactToGroup(u, grp, c) => {
-        val ng = grp.copy(contacts = c :: grp.contacts)
+        val cs = grp.contacts.getOrElse(Nil)
+        val ng = grp.copy(contacts = Some(c :: cs))
         ~>(swapGroup(u, ng, grp))
       }
       case RemoveContactFromGroup(u, grp, c) => {
-        val ng = grp.copy(contacts = grp.contacts.filterNot(_.id == c))
+        val ng = grp.copy(contacts = grp.contacts.map(_.filterNot(_.id == c)))
         ~>(swapGroup(u, ng, grp))
       }
     }
