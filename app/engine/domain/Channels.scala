@@ -24,6 +24,8 @@ object Channel {
   def href(c: Channel): String = c match {
     case IdentityChannel(_,_,_,_) => "https://shareyourproxy.com"
     case WebChannel(_, _, url, _, _) => url
+    case PhoneChannel(_, _, n, _, _) => s"tel:${n}"
+    case SmsChannel(_, _, n, _, _) => s"sms:${n}"
   }
 }
 
@@ -44,6 +46,24 @@ case class WebChannel(id: ChannelId,
 object WebChannel {
   val Identity = WebChannel(ChannelId("Google"), "Google Search", "https://www.google.com/#q=share+your+proxy", ChannelSection.Share)
   val Image = "http://icons.iconarchive.com/icons/martz90/circle-addon2/256/browser-icon.png"
+}
+
+case class PhoneChannel(id: ChannelId,
+                         label: String,
+                         number: String,
+                         channelSection: String,
+                         imageUrl: String = PhoneChannel.Image) extends Channel
+object PhoneChannel {
+  val Image = "http://images.clipartpanda.com/phone-call-icon-aiqeMor9T.png"
+}
+
+case class SmsChannel(id: ChannelId,
+                       label: String,
+                       number: String,
+                       channelSection: String,
+                       imageUrl: String = SmsChannel.Image) extends Channel
+object SmsChannel {
+  val Image = "http://static1.squarespace.com/static/5519a783e4b06e04b6a139d6/553a6a9de4b04af6cfbad2c0/553a6a9ee4b085dcc8c3c17a/1429891746316/prototype_assets-11.png"
 }
 
 

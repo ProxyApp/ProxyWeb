@@ -32,6 +32,12 @@ package object json {
     implicit val w = Json.writes[WireCreateWebChannel]
   }
 
+  case class WireCreatePhoneChannel(label: String, number: String, sms: Boolean, section: String)
+  object WireCreatePhoneChannel {
+    implicit val r= Json.reads[WireCreatePhoneChannel]
+    implicit val w= Json.writes[WireCreatePhoneChannel]
+  }
+
   case class WireCreateGroup(label: String)
   object WireCreateGroup {
     implicit val r = Json.reads[WireCreateGroup]

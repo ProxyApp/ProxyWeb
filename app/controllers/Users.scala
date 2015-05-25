@@ -1,5 +1,6 @@
 package proxy.controllers
 
+import controllers.translators.ChannelTranslator
 import engine.domain._
 import engine.domain.{json => eJ}
 import engine.io.storage.{FirebaseUserStorage, RestStorage}
@@ -89,18 +90,11 @@ trait UsersContext extends Controller {
   }
 
   def newChannel(id: String) = Action(parse.json) { request =>
-      println("found call")
-      request.body.validate[WireCreateWebChannel].map { wire =>
-        println("validated")
-        val protocol = CreateWebChannel(
-          ChannelManager.nextId,
-          wire.label,
-          wire.url,
-          wire.section)
+    ChannelTranslator.translate(request.body).map { wire =>
         svc.user(UserId(id))
           .fold(NotFound(id))(u =>
           (for{
-            c <- svc.channelManager.interpret(u, protocol)
+            c <- svc.channelManager.interpret(u, wire)
             b <- svc.channelManager.process(c)
           } yield b)
             .fold(e => BadRequest(e), r => {
@@ -109,8 +103,6 @@ trait UsersContext extends Controller {
           }))
 
       }.getOrElse(BadRequest("Not valid Json"))
-
-
     }
 
   def newGroup(id: String) = Action(parse.json) { req =>

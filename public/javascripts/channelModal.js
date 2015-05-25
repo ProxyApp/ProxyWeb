@@ -32,9 +32,11 @@ function newChannel(section, type, label){
     switch (type) {
         case "web":
             var address = $("#webUrl").val();
-            return {section: section, url: address, label: label};
+            return {section: section, url: address, label: label, channelType: type};
         case "phone":
-            alert("Phone not supported yet");
+            var sms = $("#checkPhoneCall:checked").length == 0;
+            var number = $("#phoneNumber").val();
+            return {section: section, label: label, sms: sms, number: number, channelType: type }
     }
 }
 
