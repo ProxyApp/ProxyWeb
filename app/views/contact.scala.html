@@ -1,0 +1,40 @@
+@import engine.domain._
+
+@(contact: Contact)
+
+<div class="modal fade" tabindex="-1" id="contact_@contact.id.value" role="dialog" aria-labelledby="contact_@contact.id.value" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">@contact.label</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    @for(cg <- contact.channels.groupBy(_.channelSection)){
+                        <div class="row">
+                            <div class="col-lg-12 page-header">
+                                <h2>@cg._1</h2>
+                                @for(c <- cg._2){
+                                    <div class="col-sm-6">
+                                        <a href=@Channel.href(c) class="img-circle">
+                                            <p>
+                                                <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                                            </p>
+                                            <p>
+                                                <div class="label label-default">@c.label</div>
+                                            </p>
+                                        </a>
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
