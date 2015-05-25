@@ -12,26 +12,14 @@
     <div class="col-md-9 col-md-push-3">
         <h3><span class="label label-default" id="currentGroup">@user.groups.head.label</span></h3>
         <div class="row">
-            <div class="col-xs-6 col-md-3">
-                <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
-                </a>
-            </div>
-            <div class="col-xs-6 col-md-3">
-                <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
-                </a>
-            </div>
-            <div class="col-xs-6 col-md-3">
-                <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
-                </a>
-            </div>
-            <div class="col-xs-6 col-md-3">
-                <a href="#" class="img-rounded">
-                    <img src="@routes.Assets.at("images/favicon.png")" alt="..." style="height: 180px; width: 100%; display: block;">
-                </a>
-            </div>
+            @for(ctc <- user.contacts){
+                <div class="col-xs-6 col-md-3">
+                    <button class="showContactBtn btn btn-primary" data-toggle="modal" data-target="#contact_@ctc.id.value">
+                        <img src="http://imgs.xkcd.com/comics/win_by_induction.png" style="height: 180px; width: 100%; display: block;">
+                    </button>
+                    @contact(ctc)
+                </div>
+            }
         </div>
     </div>
 

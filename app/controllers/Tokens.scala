@@ -11,7 +11,10 @@ object Tokens {
   }
 
   object ChannelTypes {
-    ""
+    val Web = "web"
+    val Phone = "phone"
   }
+
+
 
 }
