@@ -1,8 +1,7 @@
 package proxy.controllers
 
-import engine.domain.{json => eJ}
+import engine.domain.{json => eJ, ChannelSection, UserId, User}
 import Tokens.Cookies._
-import engine.domain.{UserId, User}
 import play.api._
 import play.api.mvc._
 
@@ -33,4 +32,36 @@ object Application extends Controller {
     Ok(views.html.createUser(Authentication.createUserForm))
   }
 
+  def channels = Action {implicit request => {
+    cookieRequest(request){ s =>
+      val user = s.split("=")(1)
+      Await.result(Users.svc.store.readContext(User.userKey(UserId(user)))(eJ.user), 10 seconds) match {
+        case Right(usr) => {
+          val share = usr.channels.filter(_.channelSection == ChannelSection.Share)
+          val locate = usr.channels.filter(_.channelSection == ChannelSection.Locate)
+          val chat = usr.channels.filter(_.channelSection == ChannelSection.Chat)
+          val transact = usr.channels.filter(_.channelSection == ChannelSection.Transact)
+          val play = usr.channels.filter(_.channelSection == ChannelSection.Play)
+          val schedule = usr.channels.filter(_.channelSection == ChannelSection.Schedule)
+          val general = usr.channels.filter(_.channelSection == ChannelSection.General)
+
+          Ok(views.html.main("This Is Proxy", usr)(views.html.channels.render(usr)))
+
+         // Ok(views.html.main("This Is Proxy", usr)(views.html.channels.render()))
+
+        }
+        case _ =>
+          BadRequest("Unknown User")
+      }
+    }
+  }}
+
+  private def cookieRequest(request: Request[AnyContent])(f: String => Result) = {
+   extractUserInfo(request.headers.toMap("Cookie"))
+    .fold(BadRequest("Invalid Request"))(f)
+  }
+
+  private def extractUserInfo(ls: Seq[String]): Option[String] = {
+    ls.find(_.contains(User_Information))
+  }
 }

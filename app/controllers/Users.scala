@@ -88,20 +88,29 @@ trait UsersContext extends Controller {
     )
   }
 
-  def newChannel(id: String) = Action(parse.json[WireCreateWebChannel]) { request =>
-      val wire = request.body
-      val protocol = CreateWebChannel(ChannelManager.nextId, wire.label, wire.url)
-      svc.user(UserId(id))
-        .fold(NotFound(id))(u =>
-        (for{
-          c <- svc.channelManager.interpret(u, protocol)
-          b <- svc.channelManager.process(c)
-        } yield b)
-        .fold(e => BadRequest(e), r => {
-          svc.store.writeContext(r)
-          Ok(r)
-        })
-      )
+  def newChannel(id: String) = Action(parse.json) { request =>
+      println("found call")
+      request.body.validate[WireCreateWebChannel].map { wire =>
+        println("validated")
+        val protocol = CreateWebChannel(
+          ChannelManager.nextId,
+          wire.label,
+          wire.url,
+          wire.section)
+        svc.user(UserId(id))
+          .fold(NotFound(id))(u =>
+          (for{
+            c <- svc.channelManager.interpret(u, protocol)
+            b <- svc.channelManager.process(c)
+          } yield b)
+            .fold(e => BadRequest(e), r => {
+            svc.store.writeContext(r)(eJ.user)
+            Ok(eJ.user.writes(r))
+          }))
+
+      }.getOrElse(BadRequest("Not valid Json"))
+
+
     }
 
   def newGroup(id: String) = Action(parse.json) { req =>

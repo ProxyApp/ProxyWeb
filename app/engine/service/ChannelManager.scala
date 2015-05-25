@@ -14,12 +14,14 @@ trait ChannelManager extends ServiceCore[InternalChannelCmd, P.ChannelCmd]  {
     implicit def toSucc(a: InternalChannelCmd): Err[InternalChannelCmd] = ~>[InternalChannelCmd](a)
 
     cmd match {
-      case P.CreateWebChannel(id, lbl, url) =>
+      case P.CreateWebChannel(id, lbl, url, section) =>
         context.channels.filter {
-          case WebChannel(_, l, u) => l == lbl || u == url
+          case WebChannel(_, l, u, _, _) => l == lbl || u == url
           case _ => false
         } match {
-          case Nil => CreateWebChannel(context, id, lbl, url)
+          case Nil =>
+            val validated = ChannelSection.sections.find(_ == section).getOrElse(ChannelSection.General)
+            CreateWebChannel(context, id, lbl, url, WebChannel.Image, validated)
           case _ => "Label and URL must be unique."
         }
       case P.RemoveWebChannel(id) => User.webChannels(context).filter(_.id == id) match {
@@ -31,8 +33,8 @@ trait ChannelManager extends ServiceCore[InternalChannelCmd, P.ChannelCmd]  {
 
   def process(cmd: InternalChannelCmd): Err[User] = {
     cmd match {
-      case CreateWebChannel(u, id, lbl, url) =>
-        ~>(u.copy(channels = WebChannel(id, lbl, url) :: u.channels))
+      case CreateWebChannel(u, id, lbl, url, _,  sect) =>
+        ~>(u.copy(channels = WebChannel(id, lbl, url, sect) :: u.channels))
       case RemoveWebChannel(u, id) =>
         ~>(u.copy(channels = u.channels.filterNot(_.id == id)))
     }
@@ -48,7 +50,9 @@ object ChannelManager {
   case class CreateWebChannel(context: User,
                               id: ChannelId,
                               label: String,
-                              url: String) extends InternalChannelCmd
+                              url: String,
+                              imageUrl: String,
+                              section: String) extends InternalChannelCmd
   case class RemoveWebChannel(context: User, id: ChannelId) extends InternalChannelCmd
 
 }
