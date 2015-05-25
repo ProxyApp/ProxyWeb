@@ -10,4 +10,8 @@ object Tokens {
 
   }
 
+  object ChannelTypes {
+    ""
+  }
+
 }
