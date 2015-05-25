@@ -128,11 +128,11 @@
             </div>
             <div class="modal-body">
                 <div role="tabpanel">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
+                    <ul class="nav nav-tabs" role="tablist" id="createTabs">
+                        <li role="presentation" class="active" id="web">
                             <a href="#createWeb" aria-controls="createWeb" role="tab" data-toggle="tab">Web</a>
                         </li>
-                        <li role="presentation">
+                        <li role="presentation" id="phone">
                             <a href="#createPhone" aria-controls="createPhone" role="tab" data-toggle="tab">Phone</a>
                         </li>
                     </ul>
@@ -141,7 +141,7 @@
 
                     <p>
                         <label>Name</label>
-                        <input type="text" id="webName">
+                        <input type="text" id="channelLabel">
                     </p>
                     <p>
                         <label>Section</label>
@@ -182,3 +182,4 @@
     </div>
 
 </div>
+<script src="@routes.Assets.at("javascripts/channelModal.js")"></script>
