@@ -16,7 +16,7 @@
 
                 <br/>
 
-                <label>Channels</label>
+                <label>Channels to Share</label>
                 <ul class="list">
                    @for(c<- user.channels){
                    <li>
@@ -31,7 +31,10 @@
                 <label>Contacts</label>
                 <ul class="list">
                     @for(c <- user.contacts){
-                    <li>@c.label</li>
+                    <li>
+                        @c.label
+                        <input type="checkbox" checked=@group.contacts.contains(c) class="groupContactCheckBox" id="@group.id.value||@c.id.value">
+                    </li>
                     }
                 </ul>
 
