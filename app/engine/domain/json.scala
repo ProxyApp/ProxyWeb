@@ -17,6 +17,6 @@ package object json{
   implicit val group = Json.format[Group]
 
   implicit val user = Json.format[User]
-
+    implicit val userSearch = Json.format[SearchUser]
 
 }

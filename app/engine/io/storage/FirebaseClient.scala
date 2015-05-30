@@ -45,4 +45,10 @@ object FirebaseUserQueryable extends RestQueryable[SearchUser] {
         "webusers" ::
         ".json" ::
         Nil
+
+    val order_by = SimpleArgument("orderBy")
+    val eq = SimpleArgument("=")
+    val first = SimpleArgument("first")
+    val last = SimpleArgument("last")
 }
+
