@@ -23,3 +23,7 @@ object User {
   def userKey(key: UserId) = Identity.copy(id = key)
 
 }
+
+case class SearchUser(id: UserId, first: String, last: String) extends Identifiable[UserId]
+
+case class LoginUser(id: UserId, email: String, pwHash: String) extends Identifiable[UserId]

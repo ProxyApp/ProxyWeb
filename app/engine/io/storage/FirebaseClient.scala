@@ -1,7 +1,7 @@
 package engine.io.storage
 
 import com.typesafe.config.ConfigFactory
-import engine.domain.User
+import engine.domain.{SearchUser, User}
 import engine.io.storage.Rest.Path
 import play.api.libs.json.{Writes, Reads}
 import play.api.libs.ws.{WSRequestHolder, WS, WSResponse}
@@ -35,4 +35,14 @@ object FirebaseUserStorage extends RestStorage[User] {
   val f = (user: User) => {
     Rest.path(root, "webusers", user.id.value)
   }
+}
+
+object FirebaseUserQueryable extends RestQueryable[SearchUser] {
+    val client: Rest = FirebaseClient
+    val location: Path =
+        "https://" ::
+        ConfigFactory.load().getString("Firebase.Root") ::
+        "webusers" ::
+        ".json" ::
+        Nil
 }
