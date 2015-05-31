@@ -37,18 +37,17 @@ object FirebaseUserStorage extends RestStorage[User] {
   }
 }
 
-object FirebaseUserQueryable extends RestQueryable[SearchUser] {
-    val client: Rest = FirebaseClient
+object FirebaseUserQueryable extends RestQueryable[Seq[SearchUser]] {
+    def get(p: Path) =
+        WS.url(s"https://${location.mkString("/")}?${p.mkString("")}")
     val location: Path =
-        "https://" ::
         ConfigFactory.load().getString("Firebase.Root") ::
-        "webusers" ::
-        ".json" ::
+        "webusers.json" ::
         Nil
 
     val order_by = SimpleArgument("orderBy")
-    val eq = SimpleArgument("=")
+    val equalsVaue = StringOperator("=")
     val first = SimpleArgument("first")
-    val last = SimpleArgument("last")
+    val last = SimpleArgument("\"last\"")
 }
 
