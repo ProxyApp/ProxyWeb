@@ -45,7 +45,7 @@ object Generators {
     cs <- Gen.listOfN(m, genChannel)
     n <- Gen.choose(1, 5)
     contacts <- genLsContact(n)
-  } yield Group(id, lbl, cs, contacts)
+  } yield Group(id, lbl, Some(cs), Some(contacts))
 
 
   def genUser = for {
@@ -70,7 +70,7 @@ object Generators {
     gid <- groupId
     cid <- channelId
     a <- Gen.oneOf(u.groups.head.id, gid)
-    b <- Gen.oneOf(u.groups.head.channels.head.id, cid)
+    b <- Gen.oneOf(u.groups.head.channels.head.map(_.id), cid)
   } yield P.AddChannelToGroup(a, b)
 
   def genRemoveChannel(u: User) = for {

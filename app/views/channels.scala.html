@@ -16,6 +16,24 @@
         <div class="col-lg-10 page-header">
             <h1>Chat</h1>
             @for(c <- user.channels.filter(_.channelSection == ChannelSection.Chat)) {
+                <div class="col-sm-2">
+                    <a href=@Channel.href(c) class="img-circle">
+                        <p>
+                            <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                        </p>
+                        <p>
+                        <div class="label label-default">@c.label</div>
+                        </p>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 page-header">
+            <h1>Share</h1>
+            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Share)) {
+            <div class="col-sm-2">
                 <a href=@Channel.href(c) class="img-circle">
                     <p>
                         <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
@@ -24,21 +42,7 @@
                     <div class="label label-default">@c.label</div>
                     </p>
                 </a>
-            }
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-10 page-header">
-            <h1>Share</h1>
-            @for(c <- user.channels.filter(_.channelSection == ChannelSection.Share)) {
-            <a href=@Channel.href(c) class="img-circle">
-                <p>
-                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
-                </p>
-                <p>
-                    <div class="label label-default">@c.label</div>
-                </p>
-            </a>
+            </div>
             }
         </div>
     </div>
@@ -46,14 +50,16 @@
         <div class="col-lg-10 page-header">
             <h1>Locate</h1>
             @for(c <- user.channels.filter(_.channelSection == ChannelSection.Locate)) {
-            <a href=@Channel.href(c) class="img-circle">
-                <p>
-                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
-                </p>
-                <p>
-                <div class="label label-default">@c.label</div>
-                </p>
-            </a>
+            <div class="col-sm-2">
+                <a href=@Channel.href(c) class="img-circle">
+                    <p>
+                        <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                    </p>
+                    <p>
+                    <div class="label label-default">@c.label</div>
+                    </p>
+                </a>
+            </div>
             }
         </div>
     </div>
@@ -61,14 +67,16 @@
         <div class="col-lg-10 page-header">
             <h1>Schedule</h1>
             @for(c <- user.channels.filter(_.channelSection == ChannelSection.Schedule)) {
-            <a href=@Channel.href(c) class="img-circle">
-                <p>
-                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
-                </p>
-                <p>
-                <div class="label label-default">@c.label</div>
-                </p>
-            </a>
+            <div class="col-sm-2">
+                <a href=@Channel.href(c) class="img-circle">
+                    <p>
+                        <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                    </p>
+                    <p>
+                    <div class="label label-default">@c.label</div>
+                    </p>
+                </a>
+            </div>
             }
         </div>
     </div>
@@ -76,14 +84,16 @@
         <div class="col-lg-10 page-header">
             <h1>Transact</h1>
             @for(c <- user.channels.filter(_.channelSection == ChannelSection.Transact)) {
-            <a href=@Channel.href(c) class="img-circle">
-                <p>
-                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
-                </p>
-                <p>
-                <div class="label label-default">@c.label</div>
-                </p>
-            </a>
+            <div class="col-sm-2">
+                <a href=@Channel.href(c) class="img-circle">
+                    <p>
+                        <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                    </p>
+                    <p>
+                    <div class="label label-default">@c.label</div>
+                    </p>
+                </a>
+            </div>
             }
         </div>
     </div>
@@ -91,14 +101,16 @@
         <div class="col-lg-10 page-header">
             <h1>Play</h1>
             @for(c <- user.channels.filter(_.channelSection == ChannelSection.Play)) {
-            <a href=@Channel.href(c) class="img-circle">
-                <p>
-                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
-                </p>
-                <p>
-                <div class="label label-default">@c.label</div>
-                </p>
-            </a>
+            <div class="col-sm-2">
+                <a href=@Channel.href(c) class="img-circle">
+                    <p>
+                        <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                    </p>
+                    <p>
+                    <div class="label label-default">@c.label</div>
+                    </p>
+                </a>
+            </div>
             }
         </div>
     </div>
@@ -106,14 +118,16 @@
         <div class="col-lg-10 page-header">
             <h1>General</h1>
             @for(c <- user.channels.filter(_.channelSection == ChannelSection.General)) {
-            <a href=@Channel.href(c) class="img-circle">
-                <p>
-                    <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
-                </p>
-                <p>
-                <div class="label label-default">@c.label</div>
-                </p>
-            </a>
+            <div class="col-sm-2">
+                <a href=@Channel.href(c) class="img-circle">
+                    <p>
+                        <img src=@c.imageUrl style="height: 90px; width: 90px; border-radius: 50%;">
+                    </p>
+                    <p>
+                    <div class="label label-default">@c.label</div>
+                    </p>
+                </a>
+            </div>
             }
         </div>
     </div>

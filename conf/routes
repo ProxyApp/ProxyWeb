@@ -39,7 +39,7 @@ PUT     /users/:id                              proxy.controllers.Users.replaceC
 
 
 # Activities
-GET     /search/users/                          proxy.controllers.Activities.search(name: Option[String], email: Option[String])
+GET     /search/users                          proxy.controllers.Activities.usersSearch
 
 # Profile Management
 
